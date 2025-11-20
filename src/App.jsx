@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import logo75 from './assets/75.jpeg'
 import logo100 from './assets/100.jpeg'
-import collegeLogo from './assets/college.jpeg'
+import psgTechLogo from './assets/college.jpeg'
 import iicLogo from './assets/iic.jpeg'
 import './App.css'
 
@@ -77,6 +77,15 @@ const aboutCollege = `PSG College of Technology (PSG Tech), established in 1951 
 
 const aboutEvent = `The Institution’s Innovation Council (IIC) of PSG College of Technology organizes “The Confluence – PSG Tech Innovation & Entrepreneurship Summit 2026” to foster a culture of innovation and entrepreneurial thinking. The summit provides a platform for students, faculty, startups, and industry experts to collaborate, share ideas, and showcase successful projects, startups, IPR achievements, and research outcomes of PSG Tech. Aligned with the national innovation agenda, it strengthens PSG Tech’s position as a leading contributor to India’s innovation ecosystem.`
 
+const navigationLinks = [
+  { href: '#highlights', label: 'Highlights' },
+  { href: '#competitions', label: 'Competitions' },
+  { href: '#exhibit', label: 'Exhibit' },
+  { href: '#sponsorship', label: 'Sponsorship' },
+  { href: '#about', label: 'About' },
+  { href: '#contact', label: 'Contact' },
+]
+
 const Countdown = ({ targetDate }) => {
   const calculateTimeLeft = () => {
     const difference = targetDate - new Date()
@@ -130,33 +139,57 @@ const GradientCard = ({ title, copy }) => (
 )
 
 function App() {
+  const [navOpen, setNavOpen] = useState(false)
   const eventMeta = useMemo(
     () => ({
       date: 'Friday, Feb 27, 2026',
-      venue: 'GRD Centenary Auditorium, PSG Tech, Coimbatore',
+      venue: 'GRD Centenary Auditorium',
     }),
     []
   )
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 900) {
+        setNavOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <div className="page">
       <nav className="site-nav">
         <span className="site-nav__brand">
-          <img src={collegeLogo} alt="PSG College of Technology" className="nav-logo" />
+          <img src={psgTechLogo} alt="PSG Tech logo" className="nav-logo" />
           PSG College of Technology
         </span>
-        <div className="site-nav__links">
-          <a href="#highlights">Highlights</a>
-          <a href="#competitions">Competitions</a>
-          <a href="#exhibit">Exhibit</a>
-          <a href="#sponsorship">Sponsorship</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
+        <button
+          type="button"
+          className="site-nav__toggle"
+          aria-label="Toggle navigation menu"
+          aria-controls="site-nav-links"
+          aria-expanded={navOpen}
+          onClick={() => setNavOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+        <div id="site-nav-links" className={`site-nav__links${navOpen ? ' is-open' : ''}`}>
+          {navigationLinks.map(({ href, label }) => (
+            <a key={href} href={href} onClick={() => setNavOpen(false)}>
+              {label}
+            </a>
+          ))}
           <a
             className="nav-cta"
             href="https://confluence.psgtech.ac.in"
             target="_blank"
             rel="noreferrer"
+            onClick={() => setNavOpen(false)}
           >
             Register Now
           </a>
@@ -178,23 +211,27 @@ function App() {
                 </h1>
                 <p className="hero__subtitle">PSG Tech Innovation & Entrepreneurship Summit 2026</p>
               </div>
-              <div className="hero__logos hero__logos--pair">
-                <img src={logo75} alt="PSG Tech 75 Years" className="hero-logo" />
-                <img src={logo100} alt="PSG Centenary" className="hero-logo hero-logo--centenary" />
+              <div className="hero__right-column">
+                <div className="hero__logos hero__logos--pair">
+                  <img src={logo75} alt="PSG Tech 75 Years" className="hero-logo" />
+                  <img src={logo100} alt="PSG Centenary" className="hero-logo hero-logo--centenary" />
+                </div>
               </div>
             </div>
-            <div className="hero__meta">
-              <div>
-                <span>Date</span>
-                <strong>{eventMeta.date}</strong>
+            <div className="hero__meta-row">
+              <div className="hero__meta">
+                <div>
+                  <span>Date</span>
+                  <strong>{eventMeta.date}</strong>
+                </div>
+                <div>
+                  <span>Venue</span>
+                  <strong>{eventMeta.venue}</strong>
+                </div>
               </div>
-              <div>
-                <span>Venue</span>
-                <strong>{eventMeta.venue}</strong>
+              <div className="hero__countdown">
+                <Countdown targetDate={eventDate} />
               </div>
-            </div>
-            <div className="hero__countdown">
-              <Countdown targetDate={eventDate} />
             </div>
 
             <section id="highlights" className="section section--compact">
